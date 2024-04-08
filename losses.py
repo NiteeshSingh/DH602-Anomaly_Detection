@@ -19,7 +19,7 @@ def VAE_Loss(recon_x, x, mu, logvar):
     """
     # Reconstruction loss
     reconstruction_loss = F.binary_cross_entropy(
-        recon_x, x, reduction="sum"
+        recon_x, x, reduction="mean"
     )  # Assuming input data is binary
 
     # Regularization loss (KL divergence)
