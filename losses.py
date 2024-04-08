@@ -75,9 +75,6 @@ def VAE_Loss_Patch_MSE(recon_x, x, mu, logvar, patch_size):
 
     return total_loss, reconstruction_loss.mean(), kl_divergence
 
-import torch
-import torch.nn.functional as F
-
 def VAE_Loss_Patch_CE(recon_x, x, mu, logvar, patch_size):
     """
     Compute the loss function for a Variational Autoencoder (VAE) with patch-wise cross-entropy loss.
