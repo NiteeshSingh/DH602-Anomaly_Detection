@@ -17,10 +17,13 @@ def VAE_Loss(recon_x, x, mu, logvar):
         torch.Tensor: Reconstruction loss.
         torch.Tensor: Regularization loss (KL divergence).
     """
-    # Reconstruction loss
-    reconstruction_loss = F.binary_cross_entropy(
-        recon_x, x, reduction="mean"
-    )  # Assuming input data is binary
+    # # Reconstruction loss
+    # reconstruction_loss = F.binary_cross_entropy(
+    #     recon_x, x, reduction="mean"
+    # )  # Assuming input data is binary
+
+    # Reconstruction loss (MSE)
+    reconstruction_loss = F.mse_loss(recon_x, x, reduction="mean")
 
     # Regularization loss (KL divergence)
     kl_divergence = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
