@@ -48,9 +48,9 @@ class VAE_Loss_MSE:
         reconstruction_loss = F.mse_loss(recon_x, x, reduction="mean")
 
         # Check if reconstruction loss is NaN
-        if torch.isnan(reconstruction_loss):
-            # Handle NaN value (e.g., replace with a default value)
-            reconstruction_loss = torch.tensor(0.0)  # Replace NaN with 0.0 or any other appropriate value
+        # if torch.isnan(reconstruction_loss):
+        #     # Handle NaN value (e.g., replace with a default value)
+        #     reconstruction_loss = torch.tensor(0.0)  # Replace NaN with 0.0 or any other appropriate value
 
         # Regularization loss (KL divergence)
         kl_divergence = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
