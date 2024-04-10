@@ -57,8 +57,9 @@ class VAE(nn.Module):
             )
             encoder.add_module(f"bn{idx+1}", nn.BatchNorm2d(out_channels))
             encoder.add_module(f"relu{idx+1}", nn.ReLU())
-            height, width = self.calculate_new_size(height, width)
+
             in_dim = out_channels
+            height, width = self.calculate_new_size(height, width)
             self.spatial_dims.append((height, width))
         encoder.add_module("flatten", nn.Flatten())
         return encoder
