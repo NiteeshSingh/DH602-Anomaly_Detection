@@ -179,6 +179,33 @@ class RA_Loss:
         return total_loss, reconstruction_loss, kl_divergence
 
 
+class RA_Loss_Adv:
+    def __init__(self, loss_type="bce", discriminator=None, adv_weight=1.0):
+        self.loss_type = loss_type
+        self.discriminator = discriminator
+        self.adv_weight = adv_weight
+
+    def __call__(self, recon_x, x, mu, logvar):
+        # Calculate reconstruction loss
+        reconstruction_loss = calc_reconstruction_loss(
+            x, recon_x, loss_type=self.loss_type
+        )
+
+        # Calculate KL divergence
+        kl_divergence = calc_kl(logvar, mu)
+
+        # Calculate total loss
+        total_loss = reconstruction_loss + kl_divergence
+
+        # Calculate adversarial loss if discriminator is provided
+        adversarial_loss = None
+        if self.discriminator is not None:
+            adversarial_loss = calc_adversarial_loss(recon_x, self.discriminator)
+            total_loss += adversarial_loss
+
+        return total_loss, reconstruction_loss, kl_divergence, adversarial_loss
+
+
 ### Helper functions for VAE loss calculation
 
 
@@ -236,3 +263,20 @@ def calc_reconstruction_loss(x, recon_x, loss_type="mse", reduction="sum"):
     else:
         raise NotImplementedError
     return recon_error
+
+
+def calc_adversarial_loss(recon_x, discriminator):
+    # Pass reconstructed images through the discriminator
+    # Put the model in evaluation mode
+    discriminator.eval()
+
+    # Now you can use the model to make predictions
+    with torch.no_grad():
+        discriminator_output = discriminator(recon_x)
+
+    # Calculate adversarial loss using binary cross-entropy loss
+    adversarial_loss = torch.nn.CrossEntropyLoss()(
+        discriminator_output, torch.zeros_like(discriminator_output)
+    )
+
+    return adversarial_loss
